@@ -1,0 +1,33 @@
+body {
+    background: linear-gradient(45deg, #1e1e2f, #29293d);
+    color: white;
+    text-align: center;
+    font-family: monospace;
+}
+
+#menu {
+    margin-top: 50px;
+}
+
+button {
+    padding: 15px;
+    margin: 10px;
+    border: none;
+    background: #4CAF50;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 10px;
+}
+
+button:hover {
+    background: #66bb6a;
+}
+
+canvas {
+    display: block;
+    margin: auto;
+    background: cornsilk;
+    margin-top: 30px;
+    border-radius: 10px;
+}

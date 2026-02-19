@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Puntos y Cajas</title>
+    <link rel="icon" type="image/x-icon" href="./recursos/icon-game.png">
+    <link rel="stylesheet" href="./style.css">
+</head>
+
+<body>
+
+    <h1>Bienvenido a Puntos & Cajas</h1>
+
+
+    <div id="menu">
+        <h3>¡Pon a prueba tu estrategia y completa más cuadros que tu rival!</h3>
+
+        <button id="btnCPU">1 Jugador vs CPU</button>
+        <button id="btnLocal">2 Jugadores Local</button>
+        <button id="btnOnline">Online</button>
+        <button id="btnInstrucciones">Cómo jugar</button>
+
+        <div id="onlineMenu" style="display:none">
+            <button id="btnCrearSala">Crear Sala</button>
+            <input id="codigoInput" placeholder="Código">
+            <button id="btnUnirse">Unirse</button>
+        </div>
+    </div>
+
+    <canvas id="canvasJuego"></canvas>
+
+    </div>
+
+    <!-- Pantalla Instrucciones -->
+    <div id="instrucciones" style="display:none;">
+        <h2>Instrucciones</h2>
+        <p>
+            Los jugadores dibujan líneas entre puntos.
+            Cuando completas un cuadrado ganas un punto y juegas otra vez.
+            Gana quien tenga más cuadrados al final.
+        </p>
+        <button id="btnVolver">Volver</button>
+    </div>
+
+
+    <h2>¡Diviértete jugando!</h2>
+    <button id="btnStart">Empezar Partida</button>
+
+
+
+
+</body>
+<script src="./script.js"></script>
+
+</html>
