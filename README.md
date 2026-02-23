@@ -13,7 +13,6 @@ o	Tareas por realizar:
 3.	Implementar CPU
 4.	Implementar modo Online
 5.	Interfaz final con puntuaciones
-6.	Detección de clicks lista para seleccionar puntos
 
 algunos enlaces usados:
 
