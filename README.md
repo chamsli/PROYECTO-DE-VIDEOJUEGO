@@ -15,4 +15,8 @@ o	Tareas por realizar:
 5.	Interfaz final con puntuaciones
 6.	Detección de clicks lista para seleccionar puntos
 
+algunos enlaces usados:
 
+https://youtu.be/vAeysIanWTw?si=o7BVUga1PlH_ANKp
+https://youtu.be/vAeysIanWTw?si=5xddeym2zOhknJcv
+https://youtu.be/ZKEqqIO7n-k?si=5JGY74A5tTTDLwBD
