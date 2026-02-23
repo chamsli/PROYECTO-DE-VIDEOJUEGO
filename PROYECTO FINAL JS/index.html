@@ -15,18 +15,41 @@
 
 
     <div id="menu">
-        <h3>¡Pon a prueba tu estrategia y completa más cuadros que tu rival!</h3>
+        <h2>¡Pon a prueba tu estrategia y completa más cuadros que tu rival!</h2>
+        <br>
+        <h3>Selecciona un modo</h3>
 
         <button id="btnCPU">1 Jugador vs CPU</button>
         <button id="btnLocal">2 Jugadores Local</button>
         <button id="btnOnline">Online</button>
         <button id="btnInstrucciones">Cómo jugar</button>
 
-        <div id="onlineMenu" style="display:none">
-            <button id="btnCrearSala">Crear Sala</button>
-            <input id="codigoInput" placeholder="Código">
-            <button id="btnUnirse">Unirse</button>
-        </div>
+    </div>
+    <div id="onlineMenu" style="display:none">
+        <h3>MODO ONLINE</h3>
+        <button id="btnCrearSala">Crear Sala</button>
+        <input id="codigoInput" placeholder="Código">
+        <button id="btnUnirse">Unirse</button>
+        <button class="btnVolver">Volver</button>
+    </div>
+    <div id="cpuLevels" style="display:none;">
+        <h2>MODO 1 vs CPU</h2>
+        <h3>Selecciona dificultad</h3>
+        <button id="btnFacil">Fácil</button>
+        <button id="btnMedio">Medio</button>
+        <button id="btnDificil">Difícil</button>
+        <button class="btnVolver">Volver</button>
+    </div>
+
+
+    <div id="gridSize" style="display:none;">
+        <h2>MODO 2 JUGADORES</h2>
+        <h3>Selecciona dificultad</h3>
+        <button id="btn5">5 X 5</button>
+        <button id="btn7">7 X 7</button>
+        <button id="btn10">10 X 10</button>
+        <button id="btnRapido">60 Segundos</button>
+        <button class="btnVolver">Volver</button>
     </div>
 
     <canvas id="canvasJuego"></canvas>
@@ -41,7 +64,7 @@
             Cuando completas un cuadrado ganas un punto y juegas otra vez.
             Gana quien tenga más cuadrados al final.
         </p>
-        <button id="btnVolver">Volver</button>
+        <button class="btnVolver">Volver</button>
     </div>
 
 
