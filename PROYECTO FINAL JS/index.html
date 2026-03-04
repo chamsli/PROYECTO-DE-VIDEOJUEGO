@@ -18,7 +18,7 @@
     </div>
 
     <div id="tiempoDisplay" style="display:none;">
-        Tiempo: <span id="tiempo">60</span>s
+        Tiempo: <span id="tiempo">60</span>
     </div>
     <div id="menu">
         <h2>¡Pon a prueba tu estrategia y completa más cuadros que tu rival!</h2>
@@ -58,25 +58,35 @@
         <button class="btnVolver">Volver</button>
     </div>
 
+<div id="instrucciones" style="display:none;">
+    <h2>Instrucciones</h2>
+    <p>
+        Los jugadores dibujan líneas entre puntos.
+        Cuando completas un cuadrado ganas un punto y juegas otra vez.
+        Gana quien tenga más cuadrados al final.
+    </p>
+    <button class="btnVolver">Volver</button>
+</div>
     <canvas id="canvasJuego"></canvas>
 
-    </div>
-
-    <div id="instrucciones" style="display:none;">
-        <h2>Instrucciones</h2>
-        <p>
-            Los jugadores dibujan líneas entre puntos.
-            Cuando completas un cuadrado ganas un punto y juegas otra vez.
-            Gana quien tenga más cuadrados al final.
-        </p>
-        <button class="btnVolver">Volver</button>
-    </div>
-
-
     <h2>¡Diviértete jugando!</h2>
-    <button id="btnStart">Empezar Partida</button>
 
-
+<div id="gameOverlay" class="overlay" style="display:none;">
+    <div class="modal">
+        <h2 id="gameResult">¡Ganador!</h2>
+        <div class="puntuacion-final">
+            <div class="jugador">
+                <span class="nombre">Jugador 1</span>
+                <span class="puntos" id="finalPuntosJ1">0</span>
+            </div>
+            <div class="jugador">
+                <span class="nombre">Jugador 2</span>
+                <span class="puntos" id="finalPuntosJ2">0</span>
+            </div>
+        </div>
+        <button id="btnReiniciar" >Volver al menú</button>
+    </div>
+</div>
 
 
 </body>

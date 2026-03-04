@@ -10,7 +10,6 @@ const CONFIGURACION = {
 
 const canvas = document.getElementById("canvasJuego");
 const ctx = canvas.getContext("2d");
-
 canvas.width = 600;
 canvas.height = 600;
 
@@ -21,7 +20,7 @@ const btnCrearSala = document.getElementById('btnCrearSala');
 const btnUnirse = document.getElementById('btnUnirse');
 const btnOnline = document.getElementById('btnOnline');
 const btnVolver = document.querySelectorAll('.btnVolver');
-const btnStart = document.getElementById('btnStart');
+const btnReiniciar = document.getElementById('btnReiniciar');
 const btnFacil = document.getElementById("btnFacil");
 const btnMedio = document.getElementById("btnMedio");
 const btnDificil = document.getElementById("btnDificil");
@@ -39,7 +38,6 @@ let juegoActivo = false;
 let squares = [];
 
 let margin = 40;
-let spacing;
 let intervaloReloj = null;
 let tiempoRestante = CONFIGURACION.timeLimit;
 
@@ -57,7 +55,7 @@ btnVolver.forEach(btn => {
     btn.addEventListener('click', () => volverAlMenu());
 })
 btnOnline.addEventListener('click', () => mostrarOnline());
-btnStart.addEventListener('click', () => iniciarJuego());
+btnReiniciar.addEventListener('click', () => volverAlMenu());
 btnFacil.addEventListener("click", () => setCPU("facil", 5));
 btnMedio.addEventListener("click", () => setCPU("medio", 5));
 btnDificil.addEventListener("click", () => setCPU("dificil", 5));
@@ -79,8 +77,6 @@ function seleccionarModo(modo) {
 
 }
 
-
-
 function mostrarOnline() {
     document.getElementById("onlineMenu").style.display = "block";
     document.getElementById("menu").style.display = "none";
@@ -100,7 +96,7 @@ function volverAlMenu() {
     document.getElementById("menu").style.display = "block";
     puntuacion.style.display = "none";
     document.getElementById('tiempoDisplay').style.display = "none";
-
+    document.getElementById('gameOverlay').style.display = 'none';
 }
 
 function setCPU(level, size) {
@@ -112,7 +108,6 @@ function setCPU(level, size) {
     CONFIGURACION.timerEnabled = false;
     iniciarJuego();
 }
-
 
 
 function setGrid(size, timer) {
@@ -130,7 +125,7 @@ function iniciarJuego() {
     document.getElementById("menu").style.display = "none";
     document.getElementById("gridSize").style.display = "none";
     document.getElementById("cpuLevels").style.display = "none";
-
+    document.getElementById('gameOverlay').style.display = 'none';
     console.log("Modo:", CONFIGURACION.modo);
     console.log("Tamaño:", CONFIGURACION.gridSize);
     console.log("CPU:", CONFIGURACION.cpuLevel);
@@ -244,7 +239,7 @@ function dibujarTodo() {
 
             if (square.owner !== null) {
 
-                ctx.fillStyle = square.owner ? "blue" : "red";
+                ctx.fillStyle = square.owner ? "lightskyblue" : "lightcoral";
 
                 ctx.fillRect(
                     square.x + 5,
@@ -272,7 +267,7 @@ canvas.addEventListener("click", function (e) {
     const scaleY = canvas.height / rect.height;
     const mx = (e.clientX - rect.left) * scaleX;
     const my = (e.clientY - rect.top) * scaleY;
-    if (!juegoActivo) return;
+    // if (!juegoActivo) return;
     for (let r = 0; r < squares.length; r++) {
         for (let c = 0; c < squares[r].length; c++) {
             const square = squares[r][c];
@@ -368,14 +363,13 @@ function marcarLinea(square, side, row, col) {
 
     if (juegoTerminado()) { mensajeGanador() }
 
-    // Si ahora es turno de la CPU y estamos en modo CPU, llamar a la función correspondiente
     if (CONFIGURACION.modo === "CPU" && !turnoJugador) {
-        setTimeout(turnoCPU, 500); // Pequeño retraso para que se vea la jugada
+        setTimeout(turnoCPU, 500); 
     }
 }
 
 
-//mensaje final a cambiar luego
+//mensaje final 
 function mensajeGanador() {
     juegoActivo = false;
     detenerTemporizador();
@@ -396,17 +390,19 @@ function mensajeGanador() {
             volverAlMenu();
             return;
     }
-    setTimeout(() => {
-        alert(ganador + " Puntuación: " + puntosJ1 + " - " + puntosJ2);
-        volverAlMenu();
 
-    }, 100);
+
+    document.getElementById('gameResult').textContent = ganador;
+    document.getElementById('finalPuntosJ1').textContent = puntosJ1;
+    document.getElementById('finalPuntosJ2').textContent = puntosJ2;
+    document.getElementById('gameOverlay').style.display = 'flex';
+   
 
 
 }
 
 // Cuenta cuántos lados de un cuadrado están dibujados
-function countSides(square) {
+function contarLados(square) {
     let count = 0;
     if (square.top) count++;
     if (square.bottom) count++;
@@ -431,9 +427,9 @@ function getNeighbor(row, col, side) {
 }
 
 // Determina si dibujar esta línea completaría algún cuadrado
-function wouldCompleteSquare(square, side, row, col) {
+function cuadrado3Lados(square, side, row, col) {
     // Comprobar el cuadrado actual
-    if (countSides(square) === 3) return true;
+    if (contarLados(square) === 3) return true;
 
     // Comprobar el vecino
     let neighbor = getNeighbor(row, col, side);
@@ -445,16 +441,15 @@ function wouldCompleteSquare(square, side, row, col) {
             case "left": neighborSide = "right"; break;
             case "right": neighborSide = "left"; break;
         }
-        if (countSides(neighbor) === 3 && !neighbor[neighborSide]) return true;
+        if (contarLados(neighbor) === 3 && !neighbor[neighborSide]) return true;
     }
     return false;
 }
 
-// Determina si dibujar esta línea crearía un nuevo cuadrado de 3 lados (amenaza)
-function wouldCreateThreat(square, side, row, col) {
+function cuadrado2Lados(square, side, row, col) {
     let threat = false;
     // Cuadrado actual: si tiene 2 lados, pasaría a 3
-    if (countSides(square) === 2) threat = true;
+    if (contarLados(square) === 2) threat = true;
 
     // Vecino
     let neighbor = getNeighbor(row, col, side);
@@ -466,7 +461,7 @@ function wouldCreateThreat(square, side, row, col) {
             case "left": neighborSide = "right"; break;
             case "right": neighborSide = "left"; break;
         }
-        if (countSides(neighbor) === 2 && !neighbor[neighborSide]) threat = true;
+        if (contarLados(neighbor) === 2 && !neighbor[neighborSide]) threat = true;
     }
     return threat;
 }
@@ -507,20 +502,9 @@ function getAllAvailableLines() {
 function cpuFacil() {
     const lines = getAllAvailableLines();
     if (lines.length === 0) return;
-
-    // Identificar líneas que completarían un cuadrado
-    const completing = lines.filter(line => wouldCompleteSquare(line.square, line.side, line.row, line.col));
-
-    if (completing.length > 0 && completing.length < lines.length) {
-        // Hay opciones que no completan cuadros: elegir una al azar entre ellas
-        const nonCompleting = lines.filter(line => !wouldCompleteSquare(line.square, line.side, line.row, line.col));
-        const chosen = nonCompleting[Math.floor(Math.random() * nonCompleting.length)];
-        marcarLinea(chosen.square, chosen.side, chosen.row, chosen.col);
-    } else {
-        // O todas completan o no hay completadoras: elegir cualquiera
+    // // Pick random line
         const chosen = lines[Math.floor(Math.random() * lines.length)];
         marcarLinea(chosen.square, chosen.side, chosen.row, chosen.col);
-    }
 }
 
 
@@ -530,7 +514,7 @@ function cpuMedio() {
     if (lines.length === 0) return;
 
     // Primero, si hay líneas que completan un cuadrado, tómalas
-    const completing = lines.filter(line => wouldCompleteSquare(line.square, line.side, line.row, line.col));
+    const completing = lines.filter(line => cuadrado3Lados(line.square, line.side, line.row, line.col));
     if (completing.length > 0) {
         const chosen = completing[Math.floor(Math.random() * completing.length)];
         marcarLinea(chosen.square, chosen.side, chosen.row, chosen.col);
@@ -538,7 +522,7 @@ function cpuMedio() {
     }
 
     // Si no, evita crear nuevas amenazas
-    const safe = lines.filter(line => !wouldCreateThreat(line.square, line.side, line.row, line.col));
+    const safe = lines.filter(line => !cuadrado2Lados(line.square, line.side, line.row, line.col));
     if (safe.length > 0) {
         const chosen = safe[Math.floor(Math.random() * safe.length)];
         marcarLinea(chosen.square, chosen.side, chosen.row, chosen.col);
@@ -555,28 +539,54 @@ function cpuDificil() {
     const lines = getAllAvailableLines();
     if (lines.length === 0) return;
 
-    // Prioridad: cerrar cuadros
-    const completing = lines.filter(line => wouldCompleteSquare(line.square, line.side, line.row, line.col));
+    // Close squares immediately
+    const completing = lines.filter(line =>
+        cuadrado3Lados(line.square, line.side, line.row, line.col)
+    );
+
     if (completing.length > 0) {
         const chosen = completing[Math.floor(Math.random() * completing.length)];
         marcarLinea(chosen.square, chosen.side, chosen.row, chosen.col);
         return;
     }
 
-    // Si no, evitar amenazas
-    const safe = lines.filter(line => !wouldCreateThreat(line.square, line.side, line.row, line.col));
+    //  Safe moves
+    const safe = lines.filter(line =>
+        !cuadrado2Lados(line.square, line.side, line.row, line.col)
+    );
+
     if (safe.length > 0) {
         const chosen = safe[Math.floor(Math.random() * safe.length)];
         marcarLinea(chosen.square, chosen.side, chosen.row, chosen.col);
-    } else {
-        const chosen = lines[Math.floor(Math.random() * lines.length)];
-        marcarLinea(chosen.square, chosen.side, chosen.row, chosen.col);
+        return;
     }
+
+    //  if no safe moves choose move that gives least immediate squares
+    let bestMove = lines[0];
+    let minSquaresGiven = Infinity;
+
+    for (let line of lines) {
+        let count = 0;
+
+        // Count how many squares would become 3-sided after this move
+        if (cuadrado2Lados(line.square, line.side, line.row, line.col)) {
+            count++;
+        }
+
+        if (count < minSquaresGiven) {
+            minSquaresGiven = count;
+            bestMove = line;
+        }
+    }
+
+    marcarLinea(bestMove.square, bestMove.side, bestMove.row, bestMove.col);
+
+
 }
 
 function turnoCPU() {
     if (!juegoActivo) return;
-    if (turnoJugador) return; // No es turno de la CPU
+    if (turnoJugador) return; 
     if (CONFIGURACION.modo !== "CPU") return;
 
     switch (CONFIGURACION.cpuLevel) {
@@ -644,8 +654,7 @@ function actualizarTiempoDisplay() {
 
 
 function terminarJuegoPorTiempo() {
-    // Detener el intervalo si aún existe
-    if (intervaloReloj) {
+        if (intervaloReloj) {
         clearInterval(intervaloReloj);
         intervaloReloj = null;
     }
