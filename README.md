@@ -6,14 +6,15 @@ o	Tareas realizadas:
 2.	Selección de modo y dificultad
 3.	Canvas dibuja puntos correctamente
 4.	Configuracion de dificulitad de niveles
-5.	
-o	Tareas por realizar:
-1.	Dibujar líneas entre puntos
-2.	Detectar cuadrados completos
-3.	Implementar CPU
-4.	Implementar modo Online
-5.	Interfaz final con puntuaciones
+5.	Dibujar líneas entre puntos
+6.	Detectar cuadrados completos
 
+
+o	Tareas por realizar:
+1.	Implementar CPU
+2.	calcular quien gana
+3.	Interfaz final con puntuaciones
+4.	
 algunos enlaces usados:
 
 https://youtu.be/vAeysIanWTw?si=o7BVUga1PlH_ANKp
