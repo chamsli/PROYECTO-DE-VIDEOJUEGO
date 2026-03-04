@@ -10,12 +10,12 @@ o	Tareas realizadas:
 6.	Detectar cuadrados completos
 7.	Implementar CPU
 8.	calcular quien gana
-9.	
+9.	Interfaz final con puntuaciones
 
 
 o	Tareas por realizar:
-1.	Interfaz final con puntuaciones
-2.	
+1.	
+
 algunos enlaces usados:
 
 https://youtu.be/vAeysIanWTw?si=o7BVUga1PlH_ANKp
