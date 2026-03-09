@@ -37,6 +37,7 @@ let turnoJugador = true;
 let juegoActivo = false;
 let squares = [];
 
+let cursorIndex = 0;
 let margin = 40;
 let intervaloReloj = null;
 let tiempoRestante = CONFIGURACION.timeLimit;
@@ -181,7 +182,6 @@ function dibujarPuntos(gridSize) {
     }
 }
 
-
 function calcularSpacing(gridSize) {
     return (canvas.width - margin * 2) / (gridSize - 1);
 }
@@ -214,9 +214,8 @@ function crearTablero(size) {
 }
 
 function dibujarTodo() {
-
+    
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-
     dibujarPuntos(CONFIGURACION.gridSize);
 
     for (let row of squares) {
@@ -250,6 +249,33 @@ function dibujarTodo() {
             }
         }
     }
+    
+//2players
+
+    if (CONFIGURACION.modo === "LOCAL" && !turnoJugador) {
+
+        const lines = getAllAvailableLines();
+        if (lines.length === 0) return;
+
+        const selected = lines[cursorIndex];
+        const square = selected.square;
+
+        ctx.strokeStyle = "lightgrey";
+        ctx.lineWidth = 5;
+
+        if (selected.side === "top")
+            drawLine(square.x, square.y, square.x + square.size, square.y);
+
+        if (selected.side === "bottom")
+            drawLine(square.x, square.y + square.size, square.x + square.size, square.y + square.size);
+
+        if (selected.side === "left")
+            drawLine(square.x, square.y, square.x, square.y + square.size);
+
+        if (selected.side === "right")
+            drawLine(square.x + square.size, square.y, square.x + square.size, square.y + square.size);
+    }
+
 }
 
 function drawLine(x1, y1, x2, y2) {
@@ -267,7 +293,6 @@ canvas.addEventListener("click", function (e) {
     const scaleY = canvas.height / rect.height;
     const mx = (e.clientX - rect.left) * scaleX;
     const my = (e.clientY - rect.top) * scaleY;
-    // if (!juegoActivo) return;
     for (let r = 0; r < squares.length; r++) {
         for (let c = 0; c < squares[r].length; c++) {
             const square = squares[r][c];
@@ -282,6 +307,35 @@ canvas.addEventListener("click", function (e) {
         }
     }
 });
+
+document.addEventListener("keydown", function (e) {
+    if (!juegoActivo) return;
+    if (CONFIGURACION.modo !== "LOCAL") return;
+    if (turnoJugador) return; // Solo para jugador 2
+
+    const lines = getAllAvailableLines();
+    if (lines.length === 0) return;
+
+    if (cursorIndex >= lines.length) cursorIndex = 0;
+    if (e.key === "ArrowRight" || e.key === "ArrowDown") {
+        cursorIndex = (cursorIndex + 1) % lines.length;
+        e.preventDefault();
+    }
+    if (e.key === "ArrowLeft" || e.key === "ArrowUp") {
+        cursorIndex = (cursorIndex - 1 + lines.length) % lines.length;
+        e.preventDefault();
+    }
+
+    
+    if (e.key === " " || e.key === "Enter") {
+        e.preventDefault(); 
+        const chosen = lines[cursorIndex];
+        marcarLinea(chosen.square, chosen.side, chosen.row, chosen.col);
+    }
+
+    dibujarTodo();
+});
+
 
 function detectarLado(square, mx, my) {
 
@@ -396,8 +450,6 @@ function mensajeGanador() {
     document.getElementById('finalPuntosJ1').textContent = puntosJ1;
     document.getElementById('finalPuntosJ2').textContent = puntosJ2;
     document.getElementById('gameOverlay').style.display = 'flex';
-   
-
 
 }
 
@@ -466,38 +518,59 @@ function cuadrado2Lados(square, side, row, col) {
     return threat;
 }
 
-
-
 function getAllAvailableLines() {
-    const linesMap = new Map();
+   const lines = [];
     for (let r = 0; r < squares.length; r++) {
         for (let c = 0; c < squares[r].length; c++) {
             const square = squares[r][c];
-            const sides = ["top", "bottom", "left", "right"];
-            for (let side of sides) {
-                if (!square[side]) {
-                    // Generar una clave única para la línea
-                    let key;
-                    if (side === "top") {
-                        key = `h_${r}_${c}`; // línea horizontal en la fila superior
-                    } else if (side === "bottom") {
-                        key = `h_${r + 1}_${c}`; // línea horizontal en la fila inferior
-                    } else if (side === "left") {
-                        key = `v_${r}_${c}`; // línea vertical en la columna izquierda
-                    } else if (side === "right") {
-                        key = `v_${r}_${c + 1}`; // línea vertical en la columna derecha
-                    }
-                    if (!linesMap.has(key)) {
-                        linesMap.set(key, { square, side, row: r, col: c });
-                    }
-                }
+            if (!square.top) {
+                lines.push({
+                    square, side: 'top', row: r, col: c,
+                    midX: square.x + square.size / 2,
+                    midY: square.y
+                });
+            }
+            if (!square.bottom) {
+                lines.push({
+                    square, side: 'bottom', row: r, col: c,
+                    midX: square.x + square.size / 2,
+                    midY: square.y + square.size
+                });
+            }
+            if (!square.left) {
+                lines.push({
+                    square, side: 'left', row: r, col: c,
+                    midX: square.x,
+                    midY: square.y + square.size / 2
+                });
+            }
+            if (!square.right) {
+                lines.push({
+                    square, side: 'right', row: r, col: c,
+                    midX: square.x + square.size,
+                    midY: square.y + square.size / 2
+                });
             }
         }
     }
-    return Array.from(linesMap.values());
+    // Eliminar duplicados 
+    const uniqueMap = new Map();
+    for (let line of lines) {
+        const key = `${Math.round(line.midX)}_${Math.round(line.midY)}`;
+        if (!uniqueMap.has(key)) {
+            uniqueMap.set(key, line);
+        }
+    }
+
+    // Convertir a array y ordenar por fila (midY) y luego columna (midX)
+    const uniqueLines = Array.from(uniqueMap.values());
+    uniqueLines.sort((a, b) => {
+        if (a.midY !== b.midY) return a.midY - b.midY;
+        return a.midX - b.midX;
+    });
+
+    return uniqueLines;
 }
-
-
 
 function cpuFacil() {
     const lines = getAllAvailableLines();
@@ -580,8 +653,6 @@ function cpuDificil() {
     }
 
     marcarLinea(bestMove.square, bestMove.side, bestMove.row, bestMove.col);
-
-
 }
 
 function turnoCPU() {
@@ -660,4 +731,5 @@ function terminarJuegoPorTiempo() {
     }
 
     mensajeGanador();
+
 }
